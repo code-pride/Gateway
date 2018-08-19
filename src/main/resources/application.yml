@@ -1,20 +1,21 @@
-zuul:
-  sensitiveHeaders:
-  routes:
-    api:
-      path: /api/**
-      serviceId: api
-
-ribbon:
-  eureka:
-    enabled: true
-
 spring:
   application:
-    name: zuul-gateway
+    name: gateway
   redis:
     host: localhost
     port: 6379
+  cloud:
+      gateway:
+        discovery:
+          locator:
+            enabled: true
+        routes:
+        - id: api
+          uri: lb://api
+          predicates:
+          - Path=/api/**
+          filters:
+          - RewritePath=/api/(?<segment>.*), /$\{segment}
 
 eureka:
   client:
@@ -26,8 +27,14 @@ eureka:
 server:
   port: 8080
 
-jwt:
-  secret: SecretKeyToGenJWTs
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        boot:
+#          autoconfigure: DEBUG
+#    root: debug
+
 
 # ===============================
 # = CUSTOM
@@ -36,3 +43,7 @@ jwt:
 frontend:
   url:
     parent: http://localhost:3000
+
+jwt:
+  secret: SecretKeyToGenJWTs
+  cookie: _secu

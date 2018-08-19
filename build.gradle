@@ -1,19 +1,17 @@
-group 'pl.codepride.dailyadvisor'
-version '1.0-SNAPSHOT'
+group = 'pl.codepride.dailyadvisor'
+version = '0.0.1-SNAPSHOT'
 
 buildscript {
     ext {
-        springBootVersion = '2.0.3.RELEASE'
+        springBootVersion = "2.0.4.RELEASE"
+        springCloudVersion = "2.0.1.RELEASE"
     }
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
-    configurations {
-        compile.exclude module: "spring-boot-starter-tomcat"
-    }
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
 }
 
 apply plugin: 'java'
@@ -27,19 +25,17 @@ repositories {
 }
 
 dependencyManagement {
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Finchley.RELEASE'
-    }
+	imports {
+		mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Finchley.RELEASE'
+	}
 }
 
 dependencies {
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.boot:spring-boot-starter-undertow')
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
-    compile('org.springframework.boot:spring-boot-starter-security')
-    compile 'org.springframework.data:spring-data-redis:2.0.8.RELEASE'
-    compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
-    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.0'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-gateway', version: springCloudVersion
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis-reactive', version: springBootVersion
+	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-eureka-client', version: springCloudVersion
+	compile group: 'org.projectlombok', name: 'lombok', version:'1.16.20'
+	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.0'
+
+	testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
 }
