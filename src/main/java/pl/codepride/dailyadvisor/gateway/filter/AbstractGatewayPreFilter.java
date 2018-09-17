@@ -2,22 +2,26 @@ package pl.codepride.dailyadvisor.gateway.filter;
 
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.cloud.gateway.filter.factory.AbstractNameValueGatewayFilterFactory;
+import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.function.Consumer;
+
 /**
  * Convenience class for filter.
  */
-public abstract class AbstractGatewayPreFilter extends AbstractNameValueGatewayFilterFactory {
+public abstract class AbstractGatewayPreFilter extends AbstractGatewayFilterFactory {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public GatewayFilter apply(NameValueConfig config) {
+    public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();

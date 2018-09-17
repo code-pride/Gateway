@@ -5,22 +5,24 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Jwt filter which passes requests with invalid JWT.
  */
+@Component
 public class PassingJwtFilter extends JwtFilter{
 
     @Override
     protected Mono<Void> reject(ServerHttpRequest request, ServerHttpResponse response, ServerWebExchange exchange, GatewayFilterChain chain) {
-        response.setStatusCode(HttpStatus.FORBIDDEN);
-        eraseJwt(response);
-        return response.setComplete();
+        return accept(eraseJwt(request), exchange, chain);
     }
 
     /**
@@ -29,13 +31,19 @@ public class PassingJwtFilter extends JwtFilter{
      * @return Decorated http request.
      */
     protected ServerHttpRequest eraseJwt(ServerHttpRequest request) {
-        String cookieHeader = request.getHeaders().getFirst(HttpHeaders.COOKIE);
+        return request.mutate().headers(headers -> {
+            if(headers == null) {
+                return;
+            }
 
-        if(cookieHeader == null || cookieHeader.isEmpty()) {
-            return request;
-        }
+            String cookieHeader = headers.getFirst(HttpHeaders.COOKIE);
 
-        return request.mutate().header(HttpHeaders.COOKIE, eraseJwtFromCookieHeader(cookieHeader)).build();
+            if(cookieHeader == null || cookieHeader.isEmpty()) {
+                return;
+            }
+
+            headers.set(HttpHeaders.COOKIE, eraseJwtFromCookieHeader(cookieHeader));
+        }).build();
     }
 
     /**
@@ -44,12 +52,13 @@ public class PassingJwtFilter extends JwtFilter{
      * @return Cleaned cookies header.
      */
     private String eraseJwtFromCookieHeader(String cookieHeader) {
-        Optional<String> jwtCookieValueString = Arrays.asList(cookieHeader.split(","))
+        List<String> jwtCookieValues = Arrays.asList(cookieHeader.split(";"))
                 .stream()
-                .filter(s -> s.startsWith(this.getJwtCookieName()))
-                .findFirst();
-        if(jwtCookieValueString.isPresent()) {
-            cookieHeader.replace(jwtCookieValueString.get(), "");
+                .filter(s -> s.trim().startsWith(this.getJwtCookieName())).collect(Collectors.toList());
+        if(jwtCookieValues != null) {
+            for(String jwtCookieValueString : jwtCookieValues) {
+                cookieHeader = cookieHeader.replace(jwtCookieValueString, "");
+            }
         }
 
         return cookieHeader;

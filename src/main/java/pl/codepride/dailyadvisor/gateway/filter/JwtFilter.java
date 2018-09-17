@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import pl.codepride.dailyadvisor.gateway.service.RedisService;
 import reactor.core.publisher.Mono;
@@ -21,6 +22,7 @@ import reactor.core.publisher.Mono;
 /**
  * Security filter which provides JWT token validation.
  */
+@Component
 public class JwtFilter extends AbstractGatewayPreFilter {
 
     /**
@@ -54,10 +56,10 @@ public class JwtFilter extends AbstractGatewayPreFilter {
         HttpCookie jwtCookie = request.getCookies().getFirst(jwtCookieName);
 
         if(jwtCookie == null) {
-            reject(request ,response, exchange, chain);
+            return reject(request ,response, exchange, chain);
         }
 
-        return checkJwt("").flatMap(aBoolean -> {
+        return checkJwt(jwtCookie.getValue()).flatMap(aBoolean -> {
             if(aBoolean) {
                 return accept(request, exchange, chain);
             }

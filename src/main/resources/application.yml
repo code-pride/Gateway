@@ -16,6 +16,15 @@ spring:
           - Path=/api/**
           filters:
           - RewritePath=/api/(?<segment>.*), /$\{segment}
+          - PassingJwtFilter
+          - CorsFilter
+
+        - id: userService
+          uri: lb://userService
+          predicates:
+          - Path=/users/**
+          filters:
+          - RewritePath=/users/(?<segment>.*), /$\{segment}
 
 eureka:
   client:
