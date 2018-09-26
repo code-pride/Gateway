@@ -10,8 +10,8 @@ spring:
           locator:
             enabled: true
         routes:
-        - id: api
-          uri: lb://api
+        - id: api-service
+          uri: lb://api-service
           predicates:
           - Path=/api/**
           filters:
@@ -19,8 +19,8 @@ spring:
           - PassingJwtFilter
           - CorsFilter
 
-        - id: userService
-          uri: lb://userService
+        - id: user-service
+          uri: lb://user-service
           predicates:
           - Path=/users/**
           filters:

@@ -1,5 +1,4 @@
 group = 'pl.codepride.dailyadvisor'
-version = '0.0.1-SNAPSHOT'
 
 buildscript {
     ext {

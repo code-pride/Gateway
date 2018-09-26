@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
@@ -27,7 +28,14 @@ public class GatewayConfiguration {
     }
 
     @Bean
-    ReactiveRedisOperations<String, String> redisOperations(ReactiveRedisConnectionFactory factory) {
+    public ReactiveRedisConnectionFactory connectionFactory(
+            @Value("${spring.redis.host}") String host,
+            @Value("${spring.redis.port}") int port) {
+        return new LettuceConnectionFactory(host, port);
+    }
+
+    @Bean
+    ReactiveRedisOperations<String, String> redisOperations(LettuceConnectionFactory factory) {
 
         RedisSerializationContext.RedisSerializationContextBuilder<String, String> builder =
                 RedisSerializationContext.newSerializationContext(new StringRedisSerializer());
