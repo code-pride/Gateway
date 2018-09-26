@@ -28,14 +28,14 @@ public class GatewayConfiguration {
     }
 
     @Bean
-    public ReactiveRedisConnectionFactory connectionFactory(
+    public ReactiveRedisConnectionFactory redisConnectionFactory(
             @Value("${spring.redis.host}") String host,
             @Value("${spring.redis.port}") int port) {
         return new LettuceConnectionFactory(host, port);
     }
 
     @Bean
-    ReactiveRedisOperations<String, String> redisOperations(LettuceConnectionFactory factory) {
+    ReactiveRedisOperations<String, String> redisOperations(ReactiveRedisConnectionFactory factory) {
 
         RedisSerializationContext.RedisSerializationContextBuilder<String, String> builder =
                 RedisSerializationContext.newSerializationContext(new StringRedisSerializer());
