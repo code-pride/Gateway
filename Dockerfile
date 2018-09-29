@@ -21,12 +21,7 @@ ENV XMX 128m
 
 RUN mkdir -p /app
 COPY --from=builder /gradle/build/libs/gateway.jar /app/
+COPY run.sh /app/
+WORKDIR /app
 
-CMD ["java", \
-    "-Xmx${XMX}", "-XX:+IdleTuningGcOnIdle", "-Xtune:virtualized", "-Xscmx128m", "-Xscmaxaot100m", "-Xshareclasses:cacheDir=/opt/shareclasses", \
-    "-jar", "gateway.jar", \
-    "--spring.redis.host=${REDIS_HOST}", \
-    "--spring.redis.port=${REDIS_PORT}", \
-    "--server.port=${SERVER_PORT}", \
-    "--eureka.client.serviceurl.defaultzone=http://${EUREKA_URL}/eureka/" \
-]
+ENTRYPOINT [ "sh", "./run.sh"]

@@ -1,5 +1,6 @@
 group = 'pl.codepride.dailyadvisor'
 
+
 buildscript {
     ext {
         springBootVersion = "2.0.4.RELEASE"
