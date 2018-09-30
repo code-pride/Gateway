@@ -7,5 +7,6 @@ java \
     --spring.redis.host=${REDIS_HOST} \
     --spring.redis.port=${REDIS_PORT} \
     --server.port=${SERVER_PORT} \
+    --logging.level.root=${LOGGING_LEVEL} \
     --eureka.client.serviceUrl.defaultZone=http://${EUREKA_URL}/eureka/ \
 /

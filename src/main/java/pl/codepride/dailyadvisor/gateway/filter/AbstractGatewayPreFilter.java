@@ -3,14 +3,10 @@ package pl.codepride.dailyadvisor.gateway.filter;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.cloud.gateway.filter.factory.AbstractNameValueGatewayFilterFactory;
-import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
-import java.util.function.Consumer;
 
 /**
  * Convenience class for filter.
@@ -32,15 +28,17 @@ public abstract class AbstractGatewayPreFilter extends AbstractGatewayFilterFact
 
     /**
      * Perform filter operation.
-     * @param request Http request.
+     *
+     * @param request  Http request.
      * @param response Http response.
      * @param exchange Server exchange.
-     * @param chain Filter chain.
+     * @param chain    Filter chain.
      * @return Empty mono.
      */
     protected abstract Mono<Void> doFilter(
             ServerHttpRequest request,
             ServerHttpResponse response,
             ServerWebExchange exchange,
-            GatewayFilterChain chain);
+            GatewayFilterChain chain
+    );
 }
