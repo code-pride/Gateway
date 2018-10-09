@@ -17,7 +17,6 @@ spring:
           filters:
           - RewritePath=/api/(?<segment>.*), /$\{segment}
           - PassingJwtFilter
-          - CorsFilter
 
         - id: user-service
           uri: lb://user-service
